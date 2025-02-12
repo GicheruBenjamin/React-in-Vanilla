@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter App</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        button { margin: 5px; padding: 10px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h1>Counter: <span id="count">0</span></h1>
+    <button id="increase">Increase</button>
+    <button id="reset">Reset</button>
+
+    <script>
+        let count = 0;
+        const countSpan = document.getElementById("count");
+
+        document.getElementById("increase").addEventListener("click", () => {
+            count++;
+            countSpan.textContent = count;
+        });
+
+        document.getElementById("reset").addEventListener("click", () => {
+            count = 0;
+            countSpan.textContent = count;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parent-Child Communication</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        section { margin: 20px; }
+        #color-section { background: #f0f0f0; }
+        #toogle-container { display: flex; justify-content: center; }
+        #toogle-checkbox { margin: 10px; }
+        #toogle-checkbox-input { margin-right: 10px; }
+        .dark { background: #333; }
+    </style>
+</head>
+<body>
+    <h1 id="message">Hello from Parent</h1>
+    <button id="childButton">Change Message</button>
+
+    <script>
+
+        
+        document.getElementById("childButton").addEventListener("click", () => {
+            document.getElementById("message").textContent = "New Message from Child!";
+        });
+
+
+    </script>
+</body>
+</html>

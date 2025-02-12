@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vanilla JS Hooks Demo</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    button {
+      padding: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <!-- App container -->
+  <div id="app"></div>
+  
+  <script>
+    // Global arrays and index to simulate hook behavior
+    let hookStates = [];
+    let hookIndex = 0;
+    
+    // ----------------------------
+    // Custom useState Implementation
+    // ----------------------------
+    function useState(initialValue) {
+      const currentIndex = hookIndex;
+      
+      // If this hook hasn't been initialized, set it up
+      if (hookStates[currentIndex] === undefined) {
+        hookStates[currentIndex] = initialValue;
+      }
+      
+      // Define the setter function which updates the state and re-renders the app
+      function setState(newValue) {
+        hookStates[currentIndex] = newValue;
+        renderApp(); // Re-render the app on state change
+      }
+      
+      // Increment the hook index to ensure each hook call has its own slot
+      hookIndex++;
+      
+      // Return the current state and its setter
+      return [hookStates[currentIndex], setState];
+    }
+    
+    // ----------------------------
+    // Custom useEffect Implementation
+    // ----------------------------
+    function useEffect(callback, dependencies) {
+      const currentIndex = hookIndex;
+      const hasNoDeps = !dependencies;
+      const oldDeps = hookStates[currentIndex];
+      let hasChanged = true;
+      
+      // If dependencies are provided, check if any of them have changed
+      if (!hasNoDeps && oldDeps) {
+        hasChanged = dependencies.some((dep, i) => !Object.is(dep, oldDeps[i]));
+      }
+      
+      // Run the effect only if dependencies have changed or there are no dependencies provided
+      if (hasNoDeps || hasChanged) {
+        // Use setTimeout to simulate running the effect after rendering
+        setTimeout(callback, 0);
+      }
+      
+      // Store the dependencies for the next render
+      hookStates[currentIndex] = dependencies;
+      
+      // Increment the hook index for the next hook call
+      hookIndex++;
+    }
+    
+    // ----------------------------
+    // Functional Component Using Hooks
+    // ----------------------------
+    function CounterWithEffect() {
+      // useState: Manage counter state
+      const [count, setCount] = useState(0);
+      
+      // useEffect: Log a message whenever the count changes
+      useEffect(() => {
+            alert('Effect: Count changed to', count);
+      }, [count]);
+      
+      // Create and configure a button element
+      const button = document.createElement('button');
+      button.textContent = `Count: ${count}`;
+      button.addEventListener('click', () => {
+        // Update state when the button is clicked
+        setCount(count + 1);
+      });
+      
+      return button;
+    }
+    
+    // ----------------------------
+    // Render Function for Our App
+    // ----------------------------
+    const appContainer = document.getElementById('app');
+    function renderApp() {
+      // Reset the hook index before each render so hooks are called in the same order
+      hookIndex = 0;
+      
+      // Clear the previous UI
+      appContainer.innerHTML = '';
+      
+      // Render our functional component and append it to the container
+      const appElement = CounterWithEffect();
+      appContainer.appendChild(appElement);
+    }
+    
+    // Initial render of the app
+    renderApp();
+  </script>
+</body>
+</html>

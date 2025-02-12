@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Functional Component in Vanilla JS</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  
+  <script>
+    // -------------------------
+    // A very simple hooks system
+    // -------------------------
+    
+    // Global array to store hook states
+    let hookStates = [];
+    // Global index to keep track of which hook we're in during render
+    let hookIndex = 0;
+    
+    // Custom useState hook
+    function useState(initialValue) {
+      const currentIndex = hookIndex;
+      // Initialize the state if it's not set yet
+      if (hookStates[currentIndex] === undefined) {
+        hookStates[currentIndex] = initialValue;
+      }
+      
+      // Define a setter that updates the state and re-renders the component
+      function setState(newValue) {
+        hookStates[currentIndex] = newValue;
+        // Re-render the app on state update
+        renderApp();
+      }
+      
+      // Move to the next hook index for subsequent calls
+      hookIndex++;
+      
+      // Return the current state value and the setter function
+      return [hookStates[currentIndex], setState];
+    }
+    
+    // -------------------------
+    // Functional Component: Counter
+    // -------------------------
+    
+    function Counter() {
+      // useState hook to manage count state
+      const [count, setCount] = useState(0);
+      
+      // Create a button element
+      const button = document.createElement('button');
+      button.textContent = `Count: ${count}`;
+      
+      // Increment count on button click
+      button.addEventListener('click', () => {
+        setCount(count + 1);
+      });
+      
+      return button;
+    }
+    
+    // -------------------------
+    // Render Function
+    // -------------------------
+    
+    // Get the app container
+    const appContainer = document.getElementById('app');
+    
+    function renderApp() {
+      // Reset the hook index before each render so hooks are read in the same order
+      hookIndex = 0;
+      
+      // Clear the previous UI (for this simple example)
+      appContainer.innerHTML = '';
+      
+      // Render our functional component
+      const counterElement = Counter();
+      appContainer.appendChild(counterElement);
+    }
+    
+    // Initial render of the app
+    renderApp();
+  </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Vanilla JS React Concepts</title>
+  <style>
+    /* Simple styling */
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Container for our app -->
+  <div id="app"></div>
+
+  <script>
+    // Base Component Class
+    class Component {
+      constructor(props = {}) {
+        this.props = props;
+        this.state = {};
+        this.el = null; // Reference to the root DOM element of the component
+      }
+      
+      // Mimics React's setState: merges new state and triggers re-render
+      setState(newState) {
+        this.state = { ...this.state, ...newState };
+        this.update();
+      }
+      
+      // Update the component: re-render and replace the DOM element
+      update() {
+        const newEl = this.render();
+        if (this.el && this.el.parentNode) {
+          this.el.parentNode.replaceChild(newEl, this.el);
+        }
+        this.el = newEl;
+      }
+      
+      // Mount the component into a container
+      mount(container) {
+        this.el = this.render();
+        container.appendChild(this.el);
+      }
+      
+      // The render method should be implemented by subclasses
+      render() {
+        return document.createElement('div');
+      }
+    }
+
+    // A Counter Component that extends our base Component
+    class Counter extends Component {
+      constructor(props) {
+        super(props);
+        this.state = { count: 0 };
+      }
+      
+      // Increment the count and update the component
+      increment() {
+        this.setState({ count: this.state.count + 1 });
+      }
+      
+      // The render method creates and returns the component's DOM element
+      render() {
+        // Create a button element
+        const button = document.createElement('button');
+        button.textContent = `Count: ${this.state.count}`;
+        
+        // Attach an event listener that increments the count on click
+        button.addEventListener('click', () => this.increment());
+        
+        return button;
+      }
+    }
+    
+    // Mount the Counter component to the #app container
+    const appContainer = document.getElementById('app');
+    const counter = new Counter();
+    counter.mount(appContainer);
+  </script>
+</body>
+</html>
