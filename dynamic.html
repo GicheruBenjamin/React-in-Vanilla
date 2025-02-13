@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>History API Routing Example</title>
+</head>
+<body>
+  <nav>
+    <a href="/home" data-link>Home</a>
+    <a href="/about" data-link>About</a>
+  </nav>
+  <div id="app"></div>
+
+  <script>
+    // Function to render the view based on the current path
+    function renderView(path) {
+      const routes = {
+        '/home': '<h1>Home</h1><p>Welcome to the home page!</p>',
+        '/about': '<h1>About</h1><p>Learn more about us on this page.</p>',
+      };
+
+      document.getElementById('app').innerHTML = routes[path] || '<h1>404 - Not Found</h1>';
+    }
+
+    // Intercept link clicks to use pushState
+    document.querySelectorAll('a[data-link]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const path = this.getAttribute('href');
+        history.pushState(null, null, path);
+        renderView(path);
+      });
+    });
+
+    // Handle back/forward navigation
+    window.addEventListener('popstate', () => {
+      renderView(window.location.pathname);
+    });
+
+    // Initial render
+    renderView(window.location.pathname);
+  </script>
+</body>
+</html>
